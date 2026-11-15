@@ -37,6 +37,24 @@ public class CampanhasController : ControllerBase
     public async Task<ActionResult<CampanhaResponse>> Obter(Guid id, CancellationToken ct)
         => Ok(await _campanhas.ObterAsync(id, ct));
 
+    /// <summary>Doações recentes da campanha</summary>
+    /// <remarks>Acesso público (transparência). Só doações já processadas, com o primeiro nome e a inicial do sobrenome de quem doou, e os totais de doações e doadores.</remarks>
+    /// <param name="id">Id da campanha.</param>
+    /// <param name="quantidade">Quantas doações recentes trazer (1 a 50, padrão 10).</param>
+    /// <param name="ct">Cancelamento.</param>
+    /// <response code="200">Totais e doações recentes.</response>
+    /// <response code="404">Campanha não encontrada.</response>
+    [HttpGet("{id:guid}/doacoes-recentes")]
+    [AllowAnonymous]
+    [ProducesResponseType<DoacoesDaCampanhaResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<DoacoesDaCampanhaResponse>> DoacoesRecentes(Guid id, [FromServices] IConsultas consultas,
+        [FromQuery] int quantidade = 10, CancellationToken ct = default)
+    {
+        await _campanhas.ObterAsync(id, ct); // 404 se não existe
+        return Ok(await consultas.DoacoesDaCampanhaAsync(id, Math.Clamp(quantidade, 1, 50), ct));
+    }
+
     /// <summary>Listar todas as campanhas</summary>
     /// <remarks>Só <c>GestorONG</c>. Inclui concluídas e canceladas.</remarks>
     /// <param name="ct">Cancelamento.</param>

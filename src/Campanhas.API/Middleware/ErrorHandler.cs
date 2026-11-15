@@ -19,8 +19,16 @@ public class ErrorHandler : IExceptionHandler
 
     public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken ct)
     {
+        // Cliente desistiu da requisição: não é erro do servidor nem precisa de resposta.
+        if (exception is OperationCanceledException && context.RequestAborted.IsCancellationRequested)
+        {
+            context.Response.StatusCode = 499;
+            return true;
+        }
+
         var (status, titulo) = exception switch
         {
+            BadHttpRequestException bad => (bad.StatusCode, "Requisição inválida"),
             DomainException => (StatusCodes.Status400BadRequest, "Dados inválidos"),
             UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Não autorizado"),
             NotFoundException => (StatusCodes.Status404NotFound, "Não encontrado"),

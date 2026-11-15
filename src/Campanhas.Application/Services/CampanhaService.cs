@@ -27,8 +27,8 @@ public class CampanhaService : ICampanhaService
     {
         var campanha = new Campanha(
             request.Titulo, request.Descricao,
-            DatasUtc.Normalizar(request.DataInicio), DatasUtc.Normalizar(request.DataFim),
-            request.MetaFinanceira, Agora);
+            DatasUtc.Normalizar(request.DataInicio), DatasUtc.Normalizar(request.DataFim, fimDoDia: true),
+            request.MetaFinanceira, Agora, request.Categoria, request.Capa, request.CriancasAtendidas);
 
         await _campanhas.AdicionarAsync(campanha, ct);
         await _uow.SalvarAsync(ct);
@@ -44,8 +44,8 @@ public class CampanhaService : ICampanhaService
 
         campanha.Atualizar(
             request.Titulo, request.Descricao,
-            DatasUtc.Normalizar(request.DataInicio), DatasUtc.Normalizar(request.DataFim),
-            request.MetaFinanceira, request.Status, Agora);
+            DatasUtc.Normalizar(request.DataInicio), DatasUtc.Normalizar(request.DataFim, fimDoDia: true),
+            request.MetaFinanceira, request.Status, Agora, request.Categoria, request.Capa, request.CriancasAtendidas);
 
         await _uow.SalvarAsync(ct);
         await _cache.InvalidarAsync(ct);
@@ -69,11 +69,12 @@ public class CampanhaService : ICampanhaService
     // Painel público: cache-aside no Redis. O worker apaga a chave ao processar uma doação.
     public async Task<IReadOnlyList<CampanhaAtivaResponse>> ListarAtivasAsync(CancellationToken ct = default)
     {
+        var agora = Agora;
         var emCache = await _cache.ObterAsync(ct);
         if (emCache is not null)
-            return emCache;
+            // O prazo é recalculado a cada leitura: não fica preso ao momento em que o cache foi gravado.
+            return emCache.Select(c => c with { PrazoEncerrado = c.DataFim < agora }).ToList();
 
-        var agora = Agora;
         var ativas = (await _campanhas.ListarAtivasAsync(ct)).Select(c => CampanhaAtivaResponse.De(c, agora)).ToList();
         await _cache.DefinirAsync(ativas, ct);
         return ativas;

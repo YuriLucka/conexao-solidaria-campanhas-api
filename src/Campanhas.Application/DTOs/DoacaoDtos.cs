@@ -13,12 +13,13 @@ public record CriarDoacaoRequest(Guid IdCampanha, decimal ValorDoacao);
 public record DoacaoResponse(
     Guid Id,
     Guid IdCampanha,
+    string? TituloCampanha,
     decimal ValorDoacao,
     StatusDoacao Status,
     string? MotivoRejeicao,
     DateTime CriadaEm,
     DateTime? ProcessadaEm)
 {
-    public static DoacaoResponse De(Doacao d) => new(
-        d.Id, d.CampanhaId, d.Valor, d.Status, d.MotivoRejeicao, d.CriadaEm, d.ProcessadaEm);
+    public static DoacaoResponse De(Doacao d, string? tituloCampanha) => new(
+        d.Id, d.CampanhaId, tituloCampanha, d.Valor, d.Status, d.MotivoRejeicao, d.CriadaEm, d.ProcessadaEm);
 }

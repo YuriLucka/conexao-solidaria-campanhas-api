@@ -52,12 +52,16 @@ public class CampanhaServiceTests
     [Fact]
     public async Task Painel_usa_o_cache_quando_existe()
     {
-        IReadOnlyList<CampanhaAtivaResponse> emCache = [];
-        _cache.Setup(c => c.ObterAsync(It.IsAny<CancellationToken>())).ReturnsAsync(emCache);
+        var vencida = new CampanhaAtivaResponse(Guid.NewGuid(), "Antiga", "D", 100m, 10m, Agora.UtcDateTime.AddDays(-10),
+            Agora.UtcDateTime.AddMinutes(-1), PrazoEncerrado: false, null, null, null);
+        _cache.Setup(c => c.ObterAsync(It.IsAny<CancellationToken>())).ReturnsAsync([vencida]);
 
         var resposta = await _service.ListarAtivasAsync();
 
-        Assert.Same(emCache, resposta);
+        // Vem do cache, mas o prazo é recalculado na leitura.
+        var item = Assert.Single(resposta);
+        Assert.Equal("Antiga", item.Titulo);
+        Assert.True(item.PrazoEncerrado);
         _campanhas.Verify(r => r.ListarAtivasAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 

@@ -36,6 +36,7 @@ public class AutenticacaoTests(ApiFixture api)
     [Theory]
     [InlineData("mariana@email.demo", "senha-errada")]
     [InlineData("ninguem@email.demo", "Doar@2026")]
+    [InlineData("email-sem-arroba", "Doar@2026")]
     public async Task Credenciais_invalidas_devolvem_401_sem_dizer_qual_campo_errou(string email, string senha)
     {
         using var client = api.Cliente();

@@ -28,6 +28,7 @@ public static class InfrastructureExtensions
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
         services.AddScoped<ICampanhaRepository, CampanhaRepository>();
         services.AddScoped<IDoacaoRepository, DoacaoRepository>();
+        services.AddScoped<IConsultas, Consultas.Consultas>();
 
         services.AddOptions<JwtSettings>().Bind(configuration.GetSection(JwtSettings.Secao))
             .Validate(s => s.SecretKey.Length >= 32, "JwtSettings:SecretKey precisa de pelo menos 32 caracteres.")

@@ -22,6 +22,7 @@ public class ApiFixture : IAsyncLifetime
 
     public WebApplicationFactory<Program> Factory { get; private set; } = null!;
     public string RabbitConnectionString => _rabbit.GetConnectionString();
+    public string PostgresConnectionString => _postgres.GetConnectionString();
 
     public async Task InitializeAsync()
     {

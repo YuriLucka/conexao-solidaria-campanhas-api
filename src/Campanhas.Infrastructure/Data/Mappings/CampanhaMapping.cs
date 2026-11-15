@@ -21,6 +21,9 @@ public class CampanhaMapping : IEntityTypeConfiguration<Campanha>
         builder.Property(c => c.MetaFinanceira).HasColumnName("meta_financeira").HasPrecision(14, 2).IsRequired();
         builder.Property(c => c.Status).HasColumnName("status").IsRequired().HasConversion<string>().HasMaxLength(20);
         builder.HasIndex(c => c.Status).HasDatabaseName("ix_campanhas_status");
+        builder.Property(c => c.Categoria).HasColumnName("categoria").HasMaxLength(40);
+        builder.Property(c => c.Capa).HasColumnName("capa").HasMaxLength(30);
+        builder.Property(c => c.CriancasAtendidas).HasColumnName("criancas_atendidas");
 
         // Requisito do enunciado: a API não atualiza o valor arrecadado. O EF nunca grava esta coluna
         // (nem no INSERT, que usa o default 0 do banco, nem no UPDATE); quem soma é o doacoes-worker.

@@ -24,5 +24,4 @@ public interface ICampanhaService
 public interface IDoacaoService
 {
     Task<DoacaoResponse> CriarAsync(Guid doadorId, CriarDoacaoRequest request, CancellationToken ct = default);
-    Task<IReadOnlyList<DoacaoResponse>> ListarDoDoadorAsync(Guid doadorId, CancellationToken ct = default);
 }

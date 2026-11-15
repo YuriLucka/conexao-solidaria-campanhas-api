@@ -11,7 +11,8 @@ namespace Campanhas.Infrastructure.Cache;
 public class RedisCacheCampanhasAtivas : ICacheCampanhasAtivas
 {
     public const string Chave = "campanhas:ativas";
-    private static readonly TimeSpan Ttl = TimeSpan.FromSeconds(60);
+    // Curto de propósito: limita o efeito de uma leitura concorrente com a invalidação feita pelo worker.
+    private static readonly TimeSpan Ttl = TimeSpan.FromSeconds(30);
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
     private readonly IDistributedCache _cache;

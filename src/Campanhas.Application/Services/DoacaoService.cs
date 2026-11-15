@@ -38,9 +38,6 @@ public class DoacaoService : IDoacaoService
         await _publisher.PublicarAsync(new DoacaoRecebidaEvent(doacao.Id, doacao.CampanhaId, doacao.DoadorId, doacao.Valor, agora), ct);
         await _uow.SalvarAsync(ct);
 
-        return DoacaoResponse.De(doacao);
+        return DoacaoResponse.De(doacao, campanha.Titulo);
     }
-
-    public async Task<IReadOnlyList<DoacaoResponse>> ListarDoDoadorAsync(Guid doadorId, CancellationToken ct = default)
-        => (await _doacoes.ListarPorDoadorAsync(doadorId, ct)).Select(DoacaoResponse.De).ToList();
 }

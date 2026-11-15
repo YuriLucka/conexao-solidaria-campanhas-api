@@ -32,9 +32,23 @@ namespace Campanhas.Infrastructure.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("atualizada_em");
 
+                    b.Property<string>("Capa")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("capa");
+
+                    b.Property<string>("Categoria")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("categoria");
+
                     b.Property<DateTime>("CriadaEm")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("criada_em");
+
+                    b.Property<int?>("CriancasAtendidas")
+                        .HasColumnType("integer")
+                        .HasColumnName("criancas_atendidas");
 
                     b.Property<DateTime>("DataFim")
                         .HasColumnType("timestamp with time zone")
