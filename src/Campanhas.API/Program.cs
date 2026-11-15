@@ -68,7 +68,7 @@ builder.Services.AddAuthorization();
 // Front (Blazor WASM) em outra origem durante o desenvolvimento; atrás do Kong fica na mesma origem.
 var origens = (builder.Configuration["Cors:Origens"] ?? "http://localhost:5173,http://localhost:8080")
     .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-builder.Services.AddCors(o => o.AddDefaultPolicy(p => p.WithOrigins(origens).AllowAnyHeader().AllowAnyMethod()));
+builder.Services.AddCors(o => o.AddDefaultPolicy(p => p.WithOrigins(origens).AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
 
 builder.Services.AddOpenApi(o =>
 {

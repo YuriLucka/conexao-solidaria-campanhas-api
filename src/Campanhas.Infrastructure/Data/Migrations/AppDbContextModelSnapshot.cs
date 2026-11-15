@@ -157,6 +157,58 @@ namespace Campanhas.Infrastructure.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Campanhas.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("criado_em");
+
+                    b.Property<DateTime>("ExpiraEm")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expira_em");
+
+                    b.Property<Guid>("Familia")
+                        .HasColumnType("uuid")
+                        .HasColumnName("familia");
+
+                    b.Property<DateTime?>("RevogadoEm")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revogado_em");
+
+                    b.Property<DateTime?>("SubstituidoEm")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("substituido_em");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character(64)")
+                        .HasColumnName("token_hash")
+                        .IsFixedLength();
+
+                    b.Property<Guid>("UsuarioId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("usuario_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Familia")
+                        .HasDatabaseName("ix_refresh_tokens_familia");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique()
+                        .HasDatabaseName("ix_refresh_tokens_hash");
+
+                    b.HasIndex("UsuarioId")
+                        .HasDatabaseName("ix_refresh_tokens_usuario");
+
+                    b.ToTable("refresh_tokens", (string)null);
+                });
+
             modelBuilder.Entity("Campanhas.Domain.Entities.Usuario", b =>
                 {
                     b.Property<Guid>("Id")
@@ -390,6 +442,15 @@ namespace Campanhas.Infrastructure.Data.Migrations
                         .WithMany()
                         .HasForeignKey("DoadorId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Campanhas.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("Campanhas.Domain.Entities.Usuario", null)
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

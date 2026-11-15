@@ -12,6 +12,9 @@ public class UsuarioRepository : IUsuarioRepository
 
     public UsuarioRepository(AppDbContext db) => _db = db;
 
+    public Task<Usuario?> ObterPorIdAsync(Guid id, CancellationToken ct = default)
+        => _db.Usuarios.FirstOrDefaultAsync(u => u.Id == id, ct);
+
     // O value object é criado fora da consulta: formato inválido lança DomainException aqui, não dentro do EF.
     public Task<Usuario?> ObterPorEmailAsync(string email, CancellationToken ct = default)
     {

@@ -8,5 +8,7 @@ public class JwtSettings
     public string SecretKey { get; set; } = string.Empty;
     public string Issuer { get; set; } = "conexao-solidaria";
     public string Audience { get; set; } = "conexao-solidaria";
-    public int ExpirationMinutes { get; set; } = 120;
+    // JWT curto; a sessão continua pelo refresh token (cookie HttpOnly), renovado a cada uso.
+    public int ExpirationMinutes { get; set; } = 15;
+    public int RefreshTokenDays { get; set; } = 7;
 }

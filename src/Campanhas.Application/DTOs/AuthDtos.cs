@@ -12,3 +12,6 @@ public record LoginRequest(string Email, string Senha);
 /// <param name="Nome">Nome do usuário autenticado.</param>
 /// <param name="Perfil"><c>GestorONG</c> ou <c>Doador</c>.</param>
 public record TokenResponse(string AccessToken, string TokenType, DateTime ExpiraEm, string Nome, string Perfil);
+
+/// <summary>Resultado de login ou renovação: o JWT vai no corpo; o refresh token, num cookie HttpOnly.</summary>
+public record SessaoAutenticada(TokenResponse Token, string RefreshToken, DateTime RefreshExpiraEm);

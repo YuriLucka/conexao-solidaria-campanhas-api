@@ -14,6 +14,7 @@ public class AppDbContext : DbContext, IUnitOfWork
     public DbSet<Usuario> Usuarios => Set<Usuario>();
     public DbSet<Campanha> Campanhas => Set<Campanha>();
     public DbSet<Doacao> Doacoes => Set<Doacao>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

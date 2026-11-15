@@ -9,7 +9,8 @@ data:
   ConnectionStrings__Redis: "redis:6379"
   JwtSettings__Issuer: "conexao-solidaria"
   JwtSettings__Audience: "conexao-solidaria"
-  JwtSettings__ExpirationMinutes: "120"
+  JwtSettings__ExpirationMinutes: "15"
+  JwtSettings__RefreshTokenDays: "7"
   # Dados de demonstração (gestora, doadora e campanhas com datas relativas à subida).
   Seed__Enabled: "true"
   Cors__Origens: "http://localhost:8000,http://localhost:8080"
