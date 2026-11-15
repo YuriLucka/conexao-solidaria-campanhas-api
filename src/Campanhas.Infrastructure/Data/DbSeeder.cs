@@ -14,10 +14,12 @@ public static class DbSeeder
 
     public static async Task SeedAsync(AppDbContext db, ISenhaHasher hasher, DateTime agora, CancellationToken ct = default)
     {
-        if (await db.Usuarios.AnyAsync(u => u.Email == new Email(EmailGestora), ct))
+        // A gestora pode já existir (criada como gestora inicial); os dados de demonstração entram uma vez só.
+        if (await db.Usuarios.AnyAsync(u => u.Email == new Email("mariana@email.demo"), ct))
             return;
 
-        db.Usuarios.Add(new Usuario("Helena Martins", EmailGestora, "111.444.777-35", hasher.Hash("Gestao@2026"), Perfil.GestorONG, agora));
+        if (!await db.Usuarios.AnyAsync(u => u.Email == new Email(EmailGestora), ct))
+            db.Usuarios.Add(new Usuario("Helena Martins", EmailGestora, "111.444.777-35", hasher.Hash("Gestao@2026"), Perfil.GestorONG, agora));
         db.Usuarios.Add(new Usuario("Mariana Albuquerque", "mariana@email.demo", "529.982.247-25", hasher.Hash("Doar@2026"), Perfil.Doador, agora));
 
         var hoje = agora.Date;

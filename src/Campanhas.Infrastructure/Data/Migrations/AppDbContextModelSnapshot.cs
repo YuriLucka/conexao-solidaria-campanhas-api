@@ -139,11 +139,17 @@ namespace Campanhas.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CampanhaId")
-                        .HasDatabaseName("ix_doacoes_campanha_id");
+                    b.HasIndex("CriadaEm")
+                        .HasDatabaseName("ix_doacoes_criada_em");
 
-                    b.HasIndex("DoadorId")
-                        .HasDatabaseName("ix_doacoes_doador_id");
+                    b.HasIndex("CampanhaId", "CriadaEm")
+                        .HasDatabaseName("ix_doacoes_campanha_criada");
+
+                    b.HasIndex("DoadorId", "CriadaEm")
+                        .HasDatabaseName("ix_doacoes_doador_criada");
+
+                    b.HasIndex("Status", "ProcessadaEm")
+                        .HasDatabaseName("ix_doacoes_status_processada");
 
                     b.ToTable("doacoes", null, t =>
                         {

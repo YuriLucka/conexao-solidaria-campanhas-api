@@ -112,7 +112,7 @@ await PrepararBancoAsync(app);
 
 app.Run();
 
-// Aplica as migrações (com retry enquanto o PostgreSQL sobe) e o seed de demonstração, se ligado.
+// Aplica as migrações (com retry enquanto o PostgreSQL sobe), cria a gestão inicial e o seed de demonstração, se ligado.
 static async Task PrepararBancoAsync(WebApplication app)
 {
     using var scope = app.Services.CreateScope();
@@ -133,12 +133,12 @@ static async Task PrepararBancoAsync(WebApplication app)
         }
     }
 
+    var hasher = scope.ServiceProvider.GetRequiredService<ISenhaHasher>();
+    var agora = scope.ServiceProvider.GetRequiredService<TimeProvider>().GetUtcNow().UtcDateTime;
+    if (await GestorInicial.GarantirAsync(db, hasher, app.Configuration, agora))
+        logger.LogInformation("Conta de gestão inicial criada.");
     if (app.Configuration.GetValue<bool>("Seed:Enabled"))
-    {
-        var hasher = scope.ServiceProvider.GetRequiredService<ISenhaHasher>();
-        var agora = scope.ServiceProvider.GetRequiredService<TimeProvider>().GetUtcNow().UtcDateTime;
         await DbSeeder.SeedAsync(db, hasher, agora);
-    }
 }
 
 public partial class Program { } // usado pelos testes de integração

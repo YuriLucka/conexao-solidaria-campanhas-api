@@ -52,13 +52,16 @@ public class DoacoesController : ControllerBase
 
     /// <summary>Minhas doações</summary>
     /// <remarks>Só <c>Doador</c> logado. Mostra o andamento de cada doação (<c>Pendente</c>, <c>Processada</c>, <c>Rejeitada</c>).</remarks>
+    /// <param name="pagina">Página, a partir de 1.</param>
+    /// <param name="tamanho">Itens por página (1 a 100, padrão 20).</param>
     /// <param name="ct">Cancelamento.</param>
-    /// <response code="200">Doações do usuário, mais recentes primeiro.</response>
+    /// <response code="200">Página das doações do usuário (mais recentes primeiro) e o resumo de todas elas.</response>
     [HttpGet("minhas")]
     [Authorize(Roles = "Doador")]
-    [ProducesResponseType<IReadOnlyList<DoacaoResponse>>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IReadOnlyList<DoacaoResponse>>> Minhas(CancellationToken ct)
-        => Ok(await _consultas.DoacoesDoDoadorAsync(DoadorId, ct));
+    [ProducesResponseType<MinhasDoacoesPaginaResponse>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<MinhasDoacoesPaginaResponse>> Minhas(
+        [FromQuery] int pagina = 1, [FromQuery] int tamanho = 20, CancellationToken ct = default)
+        => Ok(await _consultas.DoacoesDoDoadorAsync(DoadorId, Math.Max(1, pagina), Math.Clamp(tamanho, 1, 100), ct));
 
     /// <summary>Acompanhar uma doação</summary>
     /// <remarks>Só o <c>Doador</c> dono da doação. Usado pelo site para mostrar a doação passando de <c>Pendente</c> para <c>Processada</c>.</remarks>
@@ -74,17 +77,19 @@ public class DoacoesController : ControllerBase
         => Ok(await _consultas.DoacaoDoDoadorAsync(DoadorId, id, ct) ?? throw new NotFoundException("Doação não encontrada."));
 
     /// <summary>Listar doações (gestão)</summary>
-    /// <remarks>Só <c>GestorONG</c>. Mais recentes primeiro, com filtros opcionais.</remarks>
+    /// <remarks>Só <c>GestorONG</c>. Paginado, mais recentes primeiro, com filtros opcionais. Os totais (valor confirmado, quantidades por situação, doadores únicos e ticket médio) consideram todas as doações da campanha filtrada, não só a página.</remarks>
     /// <param name="idCampanha">Filtra por campanha.</param>
     /// <param name="status"><c>Pendente</c>, <c>Processada</c> ou <c>Rejeitada</c>.</param>
-    /// <param name="limite">Máximo de itens (1 a 500, padrão 200).</param>
+    /// <param name="pagina">Página, a partir de 1.</param>
+    /// <param name="tamanho">Itens por página (1 a 100, padrão 20).</param>
     /// <param name="ct">Cancelamento.</param>
-    /// <response code="200">Doações.</response>
+    /// <response code="200">Página de doações e os totais.</response>
     [HttpGet]
     [Authorize(Roles = "GestorONG")]
-    [ProducesResponseType<IReadOnlyList<DoacaoGestaoResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<DoacoesGestaoPaginaResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<IReadOnlyList<DoacaoGestaoResponse>>> Listar(
-        [FromQuery] Guid? idCampanha, [FromQuery] StatusDoacao? status, [FromQuery] int limite = 200, CancellationToken ct = default)
-        => Ok(await _consultas.DoacoesGestaoAsync(idCampanha, status, Math.Clamp(limite, 1, 500), ct));
+    public async Task<ActionResult<DoacoesGestaoPaginaResponse>> Listar(
+        [FromQuery] Guid? idCampanha, [FromQuery] StatusDoacao? status, [FromQuery] int pagina = 1, [FromQuery] int tamanho = 20,
+        CancellationToken ct = default)
+        => Ok(await _consultas.DoacoesGestaoAsync(idCampanha, status, Math.Max(1, pagina), Math.Clamp(tamanho, 1, 100), ct));
 }

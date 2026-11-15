@@ -72,7 +72,8 @@ public class DoacoesTests(ApiFixture api)
         Assert.Equal(0m, publico.GetProperty("valorTotalArrecadado").GetDecimal());
 
         var minhas = await doadora.GetFromJsonAsync<JsonElement>("/api/doacoes/minhas");
-        Assert.Contains(minhas.EnumerateArray(), d => d.GetProperty("id").GetGuid() == doacaoId);
+        Assert.Contains(minhas.GetProperty("itens").EnumerateArray(), d => d.GetProperty("id").GetGuid() == doacaoId);
+        Assert.True(minhas.GetProperty("total").GetInt32() >= 1);
     }
 
     [Theory]

@@ -50,3 +50,28 @@ public record ResumoGestaoResponse(
     int DoacoesHoje,
     int DoacoesPendentes,
     IReadOnlyList<ArrecadacaoDiaResponse> PorDia);
+
+/// <summary>Totais das doações (todas ou de uma campanha), calculados no banco sobre o conjunto inteiro, não só a página.</summary>
+public record TotaisDoacoesResponse(decimal TotalConfirmado, int Confirmadas, int Pendentes, int Rejeitadas, int DoadoresUnicos, decimal TicketMedio);
+
+/// <summary>Uma página de doações na visão da gestão, com os totais do filtro de campanha.</summary>
+/// <param name="Total">Quantidade de doações com os filtros aplicados (todas as páginas).</param>
+/// <param name="Totais">Totais da campanha filtrada (ou de todas), sem o filtro de situação.</param>
+public record DoacoesGestaoPaginaResponse(IReadOnlyList<DoacaoGestaoResponse> Itens, int Total, int Pagina, int Tamanho, TotaisDoacoesResponse Totais);
+
+/// <summary>Indicadores de doadores sobre todo o cadastro.</summary>
+public record IndicadoresDoadoresResponse(int Cadastrados, int DoaramUltimos30Dias, int Recorrentes, int NovosUltimos30Dias);
+
+/// <summary>Uma página de doadores, com os indicadores do cadastro inteiro.</summary>
+/// <param name="Total">Quantidade de doadores com a busca aplicada (todas as páginas).</param>
+public record DoadoresGestaoPaginaResponse(IReadOnlyList<DoadorGestaoResponse> Itens, int Total, int Pagina, int Tamanho, IndicadoresDoadoresResponse Indicadores);
+
+/// <summary>Quanto o doador já doou para uma campanha.</summary>
+public record ApoioCampanhaResponse(Guid IdCampanha, string TituloCampanha, string? Capa, string? Categoria, decimal Valor);
+
+/// <summary>Resumo das doações do doador logado (sobre todas as doações dele).</summary>
+/// <param name="PorCampanha">Campanhas que mais receberam do doador (até 6).</param>
+public record ResumoDoadorResponse(decimal TotalDoado, int Confirmadas, int CampanhasApoiadas, int Pendentes, IReadOnlyList<ApoioCampanhaResponse> PorCampanha);
+
+/// <summary>Uma página das doações do doador logado, com o resumo de todas elas.</summary>
+public record MinhasDoacoesPaginaResponse(IReadOnlyList<DoacaoResponse> Itens, int Total, int Pagina, int Tamanho, ResumoDoadorResponse Resumo);

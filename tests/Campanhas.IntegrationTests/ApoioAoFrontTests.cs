@@ -107,6 +107,29 @@ public class ApoioAoFrontTests(ApiFixture api)
     }
 
     [Fact]
+    public async Task Listas_da_gestao_paginam_e_os_totais_consideram_todas_as_doacoes()
+    {
+        var campanha = (await CriarCampanhaAsync()).GetProperty("id").GetGuid();
+        using var mariana = api.Cliente(await api.TokenDoadoraAsync());
+        foreach (var valor in new[] { 10m, 20m, 30m })
+        {
+            var id = (await (await mariana.PostAsJsonAsync("/api/doacoes", new { idCampanha = campanha, valorDoacao = valor }))
+                .Content.ReadFromJsonAsync<JsonElement>()).GetProperty("id").GetGuid();
+            await ProcessarComoWorkerAsync(id);
+        }
+        using var gestora = api.Cliente(await api.TokenGestoraAsync());
+
+        var segunda = await gestora.GetFromJsonAsync<JsonElement>($"/api/doacoes?idCampanha={campanha}&pagina=2&tamanho=2");
+
+        Assert.Equal(3, segunda.GetProperty("total").GetInt32());
+        Assert.Equal(2, segunda.GetProperty("pagina").GetInt32());
+        Assert.Single(segunda.GetProperty("itens").EnumerateArray());
+        // Totais da campanha inteira, não só da página.
+        Assert.Equal(60m, segunda.GetProperty("totais").GetProperty("totalConfirmado").GetDecimal());
+        Assert.Equal(20m, segunda.GetProperty("totais").GetProperty("ticketMedio").GetDecimal());
+    }
+
+    [Fact]
     public async Task Gestao_lista_doacoes_doadores_e_resumo_so_para_GestorONG()
     {
         var campanha = (await CriarCampanhaAsync()).GetProperty("id").GetGuid();
@@ -118,11 +141,17 @@ public class ApoioAoFrontTests(ApiFixture api)
         using var gestora = api.Cliente(await api.TokenGestoraAsync());
 
         var doacoes = await gestora.GetFromJsonAsync<JsonElement>($"/api/doacoes?idCampanha={campanha}&status=Processada");
-        var item = Assert.Single(doacoes.EnumerateArray());
+        var item = Assert.Single(doacoes.GetProperty("itens").EnumerateArray());
         Assert.Equal("Mariana Albuquerque", item.GetProperty("nomeDoador").GetString());
+        Assert.Equal(1, doacoes.GetProperty("total").GetInt32());
+        var totais = doacoes.GetProperty("totais");
+        Assert.Equal(300m, totais.GetProperty("totalConfirmado").GetDecimal());
+        Assert.Equal(1, totais.GetProperty("confirmadas").GetInt32());
+        Assert.Equal(1, totais.GetProperty("doadoresUnicos").GetInt32());
 
-        var doadores = await gestora.GetFromJsonAsync<JsonElement>("/api/gestao/doadores");
-        var marianaNaLista = doadores.EnumerateArray().Single(d => d.GetProperty("email").GetString() == "mariana@email.demo");
+        var doadores = await gestora.GetFromJsonAsync<JsonElement>("/api/gestao/doadores?busca=mariana@email&tamanho=5");
+        var marianaNaLista = doadores.GetProperty("itens").EnumerateArray().Single(d => d.GetProperty("email").GetString() == "mariana@email.demo");
+        Assert.True(doadores.GetProperty("indicadores").GetProperty("cadastrados").GetInt32() >= 1);
         Assert.Equal("***.982.247-**", marianaNaLista.GetProperty("cpfMascarado").GetString());
         Assert.True(marianaNaLista.GetProperty("totalDoado").GetDecimal() >= 300m);
 

@@ -36,12 +36,16 @@ public class GestaoController : ControllerBase
     }
 
     /// <summary>Listar doadores</summary>
-    /// <remarks>Só <c>GestorONG</c>. Com total doado (doações processadas) e CPF mascarado.</remarks>
+    /// <remarks>Só <c>GestorONG</c>. Paginado, com total doado (doações processadas), CPF mascarado e os indicadores do cadastro inteiro.</remarks>
+    /// <param name="busca">Trecho do nome ou do e-mail (opcional).</param>
+    /// <param name="pagina">Página, a partir de 1.</param>
+    /// <param name="tamanho">Itens por página (1 a 100, padrão 20).</param>
     /// <param name="ct">Cancelamento.</param>
-    /// <response code="200">Doadores, ordenados do maior para o menor total doado.</response>
+    /// <response code="200">Página de doadores, ordenados do maior para o menor total doado.</response>
     [HttpGet("doadores")]
-    [ProducesResponseType<IReadOnlyList<DoadorGestaoResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<DoadoresGestaoPaginaResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<IReadOnlyList<DoadorGestaoResponse>>> Doadores(CancellationToken ct)
-        => Ok(await _consultas.DoadoresAsync(ct));
+    public async Task<ActionResult<DoadoresGestaoPaginaResponse>> Doadores(
+        [FromQuery] string? busca, [FromQuery] int pagina = 1, [FromQuery] int tamanho = 20, CancellationToken ct = default)
+        => Ok(await _consultas.DoadoresAsync(busca, Math.Max(1, pagina), Math.Clamp(tamanho, 1, 100), _relogio.GetUtcNow().UtcDateTime, ct));
 }

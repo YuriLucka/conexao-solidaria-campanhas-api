@@ -24,7 +24,10 @@ public class DoacaoMapping : IEntityTypeConfiguration<Doacao>
         builder.HasOne<Campanha>().WithMany().HasForeignKey(d => d.CampanhaId).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne<Usuario>().WithMany().HasForeignKey(d => d.DoadorId).OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(d => d.CampanhaId).HasDatabaseName("ix_doacoes_campanha_id");
-        builder.HasIndex(d => d.DoadorId).HasDatabaseName("ix_doacoes_doador_id");
+        // Listas paginadas da gestão e do doador ordenam pela data; o resumo filtra por situação e data de processamento.
+        builder.HasIndex(d => new { d.CampanhaId, d.CriadaEm }).HasDatabaseName("ix_doacoes_campanha_criada");
+        builder.HasIndex(d => new { d.DoadorId, d.CriadaEm }).HasDatabaseName("ix_doacoes_doador_criada");
+        builder.HasIndex(d => d.CriadaEm).HasDatabaseName("ix_doacoes_criada_em");
+        builder.HasIndex(d => new { d.Status, d.ProcessadaEm }).HasDatabaseName("ix_doacoes_status_processada");
     }
 }
