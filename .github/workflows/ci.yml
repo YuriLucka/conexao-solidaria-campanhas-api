@@ -11,7 +11,8 @@ permissions:
   packages: write
 
 env:
-  IMAGE: ghcr.io/${{ github.repository_owner }}/conexao-solidaria-campanhas-api
+  # Nome da imagem precisa ser minúsculo (o dono do repositório é YuriLucka).
+  IMAGE: ghcr.io/yurilucka/conexao-solidaria-campanhas-api
 
 jobs:
   build-test-image:
