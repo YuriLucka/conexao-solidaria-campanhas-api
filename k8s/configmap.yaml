@@ -13,4 +13,7 @@ data:
   JwtSettings__RefreshTokenDays: "7"
   # Dados de demonstração (gestora, doadora e campanhas com datas relativas à subida).
   Seed__Enabled: "true"
+  # Conta da ONG criada na primeira subida, mesmo com o seed desligado. A senha vem do Secret.
+  GestorInicial__Nome: "Helena Martins"
+  GestorInicial__Email: "helena@esperancasolidaria.demo"
   Cors__Origens: "http://localhost:8000,http://localhost:8080"

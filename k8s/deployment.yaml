@@ -45,6 +45,9 @@ spec:
             - name: JwtSettings__SecretKey
               valueFrom:
                 secretKeyRef: { name: conexao-secrets, key: JWT_SECRET }
+            - name: GestorInicial__Senha
+              valueFrom:
+                secretKeyRef: { name: conexao-secrets, key: GESTOR_SENHA }
           resources:
             requests:
               memory: 160Mi

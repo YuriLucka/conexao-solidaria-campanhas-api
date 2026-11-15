@@ -1,21 +1,28 @@
 # Conexão Solidária - Campanhas API
 
-Microsserviço de usuários, campanhas e doações da plataforma Conexão Solidária (Hackathon FIAP Pós Tech 11NETT, Fase 5).
+Microsserviço de usuários, campanhas e doações da plataforma Conexão Solidária (Hackathon FIAP Pós Tech 11NETT, Grupo 31).
 Instruções para subir a solução inteira: repositório [conexao-solidaria-orchestration](https://github.com/YuriLucka/conexao-solidaria-orchestration).
 
 ## O que faz
 
 | Método | Rota | Acesso |
 |---|---|---|
-| POST | `/api/auth/login` | público |
+| POST | `/api/auth/login` | público (JWT de 15 min no corpo; refresh token em cookie HttpOnly) |
+| POST | `/api/auth/refresh` | cookie do refresh token (troca o token a cada uso) |
+| POST | `/api/auth/logout` | cookie do refresh token (revoga a sessão) |
 | POST | `/api/doadores` | público |
 | GET | `/api/campanhas/ativas` | público (painel de transparência) |
 | GET | `/api/campanhas/{id}` | público |
+| GET | `/api/campanhas/{id}/doacoes-recentes` | público |
 | GET | `/api/campanhas` | GestorONG |
 | POST | `/api/campanhas` | GestorONG |
 | PUT | `/api/campanhas/{id}` | GestorONG |
 | POST | `/api/doacoes` | Doador |
-| GET | `/api/doacoes/minhas` | Doador |
+| GET | `/api/doacoes/minhas` | Doador (paginado, com resumo) |
+| GET | `/api/doacoes/{id}` | Doador dono da doação |
+| GET | `/api/doacoes` | GestorONG (paginado, filtros, totais) |
+| GET | `/api/gestao/resumo` | GestorONG |
+| GET | `/api/gestao/doadores` | GestorONG (paginado, busca, indicadores) |
 | GET | `/health`, `/health/live`, `/metrics` | infraestrutura |
 
 Documentação interativa (Scalar) em `/scalar`; documento OpenAPI em `/openapi/v1.json`.
