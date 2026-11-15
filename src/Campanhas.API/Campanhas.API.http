@@ -1,0 +1,70 @@
+# Roteiro do vídeo (itens d.i a d.iii) em arquivo .http (Visual Studio, Rider ou extensão REST Client do VS Code).
+# Pelo Kong: http://localhost:8000. Direto na API (dotnet run): http://localhost:5080.
+@base = http://localhost:8000
+
+### d.i - Login da gestora (guarda o token)
+# @name loginGestora
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "helena@esperancasolidaria.demo", "senha": "Gestao@2026" }
+
+### d.i - Login da doadora
+# @name loginDoadora
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "mariana@email.demo", "senha": "Doar@2026" }
+
+### d.i - Doador tentando a gestão: 403
+GET {{base}}/api/campanhas
+Authorization: Bearer {{loginDoadora.response.body.$.accessToken}}
+
+### d.ii - Campanha inválida: término no passado (400)
+POST {{base}}/api/campanhas
+Authorization: Bearer {{loginGestora.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "titulo": "Campanha inválida", "descricao": "Teste", "dataInicio": "2026-01-01T00:00:00Z", "dataFim": "2026-02-01T00:00:00Z", "metaFinanceira": 1000 }
+
+### d.ii - Campanha inválida: meta zero (400)
+POST {{base}}/api/campanhas
+Authorization: Bearer {{loginGestora.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "titulo": "Campanha inválida", "descricao": "Teste", "dataInicio": "2026-11-15T00:00:00Z", "dataFim": "2027-03-01T23:59:59Z", "metaFinanceira": 0 }
+
+### d.ii - Campanha válida (201)
+# @name novaCampanha
+POST {{base}}/api/campanhas
+Authorization: Bearer {{loginGestora.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "titulo": "Agasalho Solidário", "descricao": "Casacos e cobertores para as 220 crianças acolhidas pela ONG.", "dataInicio": "2026-11-15T00:00:00Z", "dataFim": "2027-03-01T23:59:59Z", "metaFinanceira": 15000 }
+
+### d.iii - Doação (202): payload enviado
+POST {{base}}/api/doacoes
+Authorization: Bearer {{loginDoadora.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "idCampanha": "{{novaCampanha.response.body.$.id}}", "valorDoacao": 150.00 }
+
+### d.iii - API pública: valor atualizado pelo worker
+GET {{base}}/api/campanhas/ativas
+
+### Acompanhar as doações da doadora
+GET {{base}}/api/doacoes/minhas
+Authorization: Bearer {{loginDoadora.response.body.$.accessToken}}
+
+### Editar campanha (inclusive status)
+PUT {{base}}/api/campanhas/{{novaCampanha.response.body.$.id}}
+Authorization: Bearer {{loginGestora.response.body.$.accessToken}}
+Content-Type: application/json
+
+{ "titulo": "Agasalho Solidário", "descricao": "Meta ampliada.", "dataInicio": "2026-11-15T00:00:00Z", "dataFim": "2027-03-01T23:59:59Z", "metaFinanceira": 20000, "status": "Ativa" }
+
+### Cadastro público de doador (201; repetir dá 409)
+POST {{base}}/api/doadores
+Content-Type: application/json
+
+{ "nomeCompleto": "João da Silva", "email": "joao.silva@email.demo", "cpf": "092.275.377-67", "senha": "Doar@2026" }

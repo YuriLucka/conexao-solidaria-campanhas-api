@@ -25,10 +25,16 @@ builder.Logging.AddSimpleConsole(o =>
 
 // Status e perfis trafegam como texto ("Ativa", "GestorONG"), como no enunciado.
 builder.Services.AddControllers()
-    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+    .ConfigureApiBehaviorOptions(o => o.InvalidModelStateResponseFactory = ErrosValidacao.Responder);
 builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-builder.Services.AddProblemDetails();
+// Respostas sem corpo (401, 403, 404 de rota...) também saem como ProblemDetails com título em português.
+builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
+{
+    if (ctx.Exception is null && ctx.ProblemDetails.Status is { } status && ErrosValidacao.TituloPorStatus(status) is { } titulo)
+        ctx.ProblemDetails.Title = titulo;
+});
 builder.Services.AddExceptionHandler<ErrorHandler>();
 
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -72,6 +78,7 @@ builder.Services.AddOpenApi(o =>
 {
     o.AddDocumentTransformer<DocumentoTransformer>();
     o.AddOperationTransformer<SegurancaOperacaoTransformer>();
+    o.AddSchemaTransformer<ExemplosTransformer>();
 });
 
 builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>("postgres");
