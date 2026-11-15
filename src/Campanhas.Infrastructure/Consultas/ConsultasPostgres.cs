@@ -1,17 +1,17 @@
+using Campanhas.Application.Common;
 using Campanhas.Application.DTOs;
 using Campanhas.Application.Interfaces;
-using Campanhas.Application.Services;
 using Campanhas.Domain.Enums;
 using Campanhas.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Campanhas.Infrastructure.Consultas;
 
-public class Consultas : IConsultas
+public class ConsultasPostgres : IConsultas
 {
     private readonly AppDbContext _db;
 
-    public Consultas(AppDbContext db) => _db = db;
+    public ConsultasPostgres(AppDbContext db) => _db = db;
 
     public async Task<DoacoesDaCampanhaResponse> DoacoesDaCampanhaAsync(Guid campanhaId, int quantidade, CancellationToken ct = default)
     {
@@ -213,7 +213,7 @@ public class Consultas : IConsultas
     }
 
     // "Mariana Albuquerque" -> "Mariana A."
-    public static string NomeAbreviado(string nome)
+    private static string NomeAbreviado(string nome)
     {
         var partes = nome.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         return partes.Length switch
@@ -225,6 +225,6 @@ public class Consultas : IConsultas
     }
 
     // "52998224725" -> "***.982.247-**"
-    public static string MascararCpf(string cpf)
+    private static string MascararCpf(string cpf)
         => cpf.Length == 11 ? $"***.{cpf[3..6]}.{cpf[6..9]}-**" : "***";
 }

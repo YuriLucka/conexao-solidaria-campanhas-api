@@ -36,7 +36,7 @@ public class Usuario
         CriadoEm = agora;
     }
 
-    // Regra da FCG: mínimo 8 caracteres, com letra, número e caractere especial.
+    // Mínimo 8 caracteres, com letra, número e caractere especial.
     public static void ValidarSenha(string senha)
     {
         if (string.IsNullOrWhiteSpace(senha) || senha.Length < 8)

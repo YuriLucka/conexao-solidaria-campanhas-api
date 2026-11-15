@@ -2,7 +2,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Campanhas.API.Middleware;
+namespace Campanhas.API.Http;
 
 // Erros de validação automática (corpo ausente, JSON inválido, campo obrigatório) em português,
 // no mesmo formato ProblemDetails dos erros de domínio, com a lista por campo em "errors".

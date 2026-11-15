@@ -1,9 +1,9 @@
 using System.Text;
 using System.Text.Json.Serialization;
-using Campanhas.API.Middleware;
+using Campanhas.API.Http;
 using Campanhas.API.OpenApi;
+using Campanhas.Application;
 using Campanhas.Application.Interfaces;
-using Campanhas.Application.Services;
 using Campanhas.Infrastructure;
 using Campanhas.Infrastructure.Data;
 using Campanhas.Infrastructure.Security;
@@ -37,12 +37,8 @@ builder.Services.AddProblemDetails(o => o.CustomizeProblemDetails = ctx =>
 });
 builder.Services.AddExceptionHandler<ErrorHandler>();
 
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
-
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IDoadorService, DoadorService>();
-builder.Services.AddScoped<ICampanhaService, CampanhaService>();
-builder.Services.AddScoped<IDoacaoService, DoacaoService>();
 
 var jwt = builder.Configuration.GetSection(JwtSettings.Secao).Get<JwtSettings>() ?? new JwtSettings();
 if (string.IsNullOrWhiteSpace(jwt.SecretKey))

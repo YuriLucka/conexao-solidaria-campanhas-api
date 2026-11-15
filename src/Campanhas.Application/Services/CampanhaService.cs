@@ -1,3 +1,4 @@
+using Campanhas.Application.Common;
 using Campanhas.Application.DTOs;
 using Campanhas.Application.Exceptions;
 using Campanhas.Application.Interfaces;

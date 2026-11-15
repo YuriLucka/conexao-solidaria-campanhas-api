@@ -1,3 +1,4 @@
+using Campanhas.API.Seguranca;
 using Campanhas.Application.DTOs;
 using Campanhas.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -62,7 +63,7 @@ public class CampanhasController : ControllerBase
     /// <response code="401">Sem token.</response>
     /// <response code="403">Token sem o perfil GestorONG.</response>
     [HttpGet]
-    [Authorize(Roles = "GestorONG")]
+    [Authorize(Roles = Perfis.GestorONG)]
     [ProducesResponseType<IReadOnlyList<CampanhaResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -78,7 +79,7 @@ public class CampanhasController : ControllerBase
     /// <response code="401">Sem token.</response>
     /// <response code="403">Token sem o perfil GestorONG.</response>
     [HttpPost]
-    [Authorize(Roles = "GestorONG")]
+    [Authorize(Roles = Perfis.GestorONG)]
     [ProducesResponseType<CampanhaResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -100,7 +101,7 @@ public class CampanhasController : ControllerBase
     /// <response code="403">Token sem o perfil GestorONG.</response>
     /// <response code="404">Campanha não encontrada.</response>
     [HttpPut("{id:guid}")]
-    [Authorize(Roles = "GestorONG")]
+    [Authorize(Roles = Perfis.GestorONG)]
     [ProducesResponseType<CampanhaResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

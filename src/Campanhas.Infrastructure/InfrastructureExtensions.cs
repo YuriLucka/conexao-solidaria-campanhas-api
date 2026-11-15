@@ -1,6 +1,7 @@
 using Campanhas.Application.Interfaces;
 using Campanhas.Domain.Interfaces;
 using Campanhas.Infrastructure.Cache;
+using Campanhas.Infrastructure.Consultas;
 using Campanhas.Infrastructure.Data;
 using Campanhas.Infrastructure.Messaging;
 using Campanhas.Infrastructure.Repositories;
@@ -28,7 +29,7 @@ public static class InfrastructureExtensions
         services.AddScoped<IUsuarioRepository, UsuarioRepository>();
         services.AddScoped<ICampanhaRepository, CampanhaRepository>();
         services.AddScoped<IDoacaoRepository, DoacaoRepository>();
-        services.AddScoped<IConsultas, Consultas.Consultas>();
+        services.AddScoped<IConsultas, ConsultasPostgres>();
 
         services.AddOptions<JwtSettings>().Bind(configuration.GetSection(JwtSettings.Secao))
             .Validate(s => s.SecretKey.Length >= 32, "JwtSettings:SecretKey precisa de pelo menos 32 caracteres.")

@@ -1,4 +1,4 @@
-using Campanhas.Application.Services;
+using Campanhas.Application.Common;
 
 namespace Campanhas.Tests.Application;
 

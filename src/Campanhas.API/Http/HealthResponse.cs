@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace Campanhas.API.Middleware;
+namespace Campanhas.API.Http;
 
 // Resposta do /health em JSON: {"status":"Healthy","checks":{"postgres":"Healthy"}}. 503 quando algo falha.
 public static class HealthResponse

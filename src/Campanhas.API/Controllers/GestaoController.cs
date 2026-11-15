@@ -1,3 +1,4 @@
+using Campanhas.API.Seguranca;
 using Campanhas.Application.DTOs;
 using Campanhas.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,7 @@ namespace Campanhas.API.Controllers;
 [ApiController]
 [Route("api/gestao")]
 [Tags("Gestão")]
-[Authorize(Roles = "GestorONG")]
+[Authorize(Roles = Perfis.GestorONG)]
 public class GestaoController : ControllerBase
 {
     private readonly IConsultas _consultas;

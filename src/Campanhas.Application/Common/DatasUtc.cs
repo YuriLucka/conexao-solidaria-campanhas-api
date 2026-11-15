@@ -1,4 +1,4 @@
-namespace Campanhas.Application.Services;
+namespace Campanhas.Application.Common;
 
 // Datas sem fuso (ex.: "2026-12-31T23:59:59" ou "2026-12-31") são do horário de Brasília (UTC-3, sem horário de verão
 // desde 2019) e viram UTC; o PostgreSQL (timestamptz) exige Kind = Utc.

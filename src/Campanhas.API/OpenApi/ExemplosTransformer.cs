@@ -36,7 +36,7 @@ internal sealed class ExemplosTransformer : IOpenApiSchemaTransformer
         };
 
         if (exemplo is not null)
-            schema.Example = exemplo;
+            schema.Examples = [exemplo];
         return Task.CompletedTask;
     }
 }

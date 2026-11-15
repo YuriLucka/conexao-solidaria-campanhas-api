@@ -23,7 +23,7 @@ public class DoadorService : IDoadorService
         _relogio = relogio;
     }
 
-    // Cadastro público cria sempre o perfil Doador; GestorONG só existe pelo seed.
+    // Cadastro público cria sempre o perfil Doador; a conta GestorONG vem da gestão inicial (GestorInicial) ou do seed.
     public async Task<DoadorResponse> CadastrarAsync(CadastrarDoadorRequest request, CancellationToken ct = default)
     {
         var email = new Email(request.Email);

@@ -1,9 +1,11 @@
+using Campanhas.API.Seguranca;
 using Campanhas.Application.DTOs;
 using Campanhas.Application.Exceptions;
 using Campanhas.Application.Interfaces;
 using Campanhas.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Campanhas.API.Controllers;
 
@@ -23,7 +25,7 @@ public class DoacoesController : ControllerBase
     }
 
     // O doador vem do token (claim "sub"), nunca do corpo.
-    private Guid DoadorId => Guid.Parse(User.FindFirst("sub")?.Value
+    private Guid DoadorId => Guid.Parse(User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
         ?? throw new UnauthorizedAccessException("Token sem identificação do usuário."));
 
     /// <summary>Doar</summary>
@@ -37,7 +39,7 @@ public class DoacoesController : ControllerBase
     /// <response code="404">Campanha não encontrada.</response>
     /// <response code="422">Campanha concluída, cancelada ou com prazo encerrado.</response>
     [HttpPost]
-    [Authorize(Roles = "Doador")]
+    [Authorize(Roles = Perfis.Doador)]
     [ProducesResponseType<DoacaoResponse>(StatusCodes.Status202Accepted)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -57,7 +59,7 @@ public class DoacoesController : ControllerBase
     /// <param name="ct">Cancelamento.</param>
     /// <response code="200">Página das doações do usuário (mais recentes primeiro) e o resumo de todas elas.</response>
     [HttpGet("minhas")]
-    [Authorize(Roles = "Doador")]
+    [Authorize(Roles = Perfis.Doador)]
     [ProducesResponseType<MinhasDoacoesPaginaResponse>(StatusCodes.Status200OK)]
     public async Task<ActionResult<MinhasDoacoesPaginaResponse>> Minhas(
         [FromQuery] int pagina = 1, [FromQuery] int tamanho = 20, CancellationToken ct = default)
@@ -70,7 +72,7 @@ public class DoacoesController : ControllerBase
     /// <response code="200">Doação encontrada.</response>
     /// <response code="404">Doação inexistente ou de outro doador.</response>
     [HttpGet("{id:guid}")]
-    [Authorize(Roles = "Doador")]
+    [Authorize(Roles = Perfis.Doador)]
     [ProducesResponseType<DoacaoResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<DoacaoResponse>> Obter(Guid id, CancellationToken ct)
@@ -86,7 +88,7 @@ public class DoacoesController : ControllerBase
     /// <param name="ct">Cancelamento.</param>
     /// <response code="200">Página de doações e os totais.</response>
     [HttpGet]
-    [Authorize(Roles = "GestorONG")]
+    [Authorize(Roles = Perfis.GestorONG)]
     [ProducesResponseType<DoacoesGestaoPaginaResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<DoacoesGestaoPaginaResponse>> Listar(

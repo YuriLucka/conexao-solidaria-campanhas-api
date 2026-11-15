@@ -3,7 +3,7 @@ using Campanhas.Domain.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Campanhas.API.Middleware;
+namespace Campanhas.API.Http;
 
 // Converte exceções em ProblemDetails com o status certo.
 public class ErrorHandler : IExceptionHandler
