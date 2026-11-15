@@ -1,3 +1,4 @@
+using Campanhas.Application.Common;
 using Campanhas.Application.Interfaces;
 using Campanhas.Domain.Entities;
 using Campanhas.Domain.Enums;
@@ -22,10 +23,11 @@ public static class DbSeeder
             db.Usuarios.Add(new Usuario("Helena Martins", EmailGestora, "111.444.777-35", hasher.Hash("Gestao@2026"), Perfil.GestorONG, agora));
         db.Usuarios.Add(new Usuario("Mariana Albuquerque", "mariana@email.demo", "529.982.247-25", hasher.Hash("Doar@2026"), Perfil.Doador, agora));
 
-        var hoje = agora.Date;
+        // Mesma regra da gestão: começa às 00:00 e termina às 23:59:59 do horário de Brasília.
+        var hoje = DatasUtc.DiaEmBrasilia(agora).ToDateTime(TimeOnly.MinValue);
         Campanha Nova(string titulo, string descricao, int inicioEmDias, int fimEmDias, decimal meta, string categoria, string capa, int criancas) =>
-            new(titulo, descricao, hoje.AddDays(inicioEmDias).AddHours(9), hoje.AddDays(fimEmDias).AddHours(23).AddMinutes(59), meta, agora,
-                categoria, capa, criancas);
+            new(titulo, descricao, DatasUtc.Normalizar(hoje.AddDays(inicioEmDias)), DatasUtc.Normalizar(hoje.AddDays(fimEmDias), fimDoDia: true),
+                meta, agora, categoria, capa, criancas);
 
         var campanhas = new[]
         {
