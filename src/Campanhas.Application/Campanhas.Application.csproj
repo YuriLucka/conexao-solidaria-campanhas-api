@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Campanhas.Application</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;1573</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Campanhas.Domain\Campanhas.Domain.csproj" />
+    <ProjectReference Include="..\..\building-blocks\ConexaoSolidaria.Contracts\ConexaoSolidaria.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

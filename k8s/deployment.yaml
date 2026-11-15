@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: campanhas-api
+  namespace: conexao-solidaria
+  labels:
+    app: campanhas-api
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: campanhas-api
+  template:
+    metadata:
+      labels:
+        app: campanhas-api
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: campanhas-api
+          image: ghcr.io/yurilucka/conexao-solidaria-campanhas-api:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: campanhas-api-config
+          env:
+            # Segredos criados pelo script da orquestração a partir do .env (nada versionado).
+            - name: ConnectionStrings__Postgres
+              valueFrom:
+                secretKeyRef: { name: conexao-secrets, key: POSTGRES_CONNECTION }
+            - name: RabbitMq__User
+              valueFrom:
+                secretKeyRef: { name: conexao-secrets, key: RABBIT_USER }
+            - name: RabbitMq__Pass
+              valueFrom:
+                secretKeyRef: { name: conexao-secrets, key: RABBIT_PASS }
+            - name: JwtSettings__SecretKey
+              valueFrom:
+                secretKeyRef: { name: conexao-secrets, key: JWT_SECRET }
+          resources:
+            requests:
+              memory: 160Mi
+              cpu: 100m
+            limits:
+              memory: 400Mi
+          lifecycle:
+            preStop:
+              # Tempo para o pod sair do Service/Kong antes do Kestrel parar.
+              exec:
+                command: ["sleep", "5"]
+          startupProbe:
+            httpGet: { path: /health/live, port: http }
+            periodSeconds: 5
+            failureThreshold: 36
+          readinessProbe:
+            httpGet: { path: /health, port: http }
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet: { path: /health/live, port: http }
+            periodSeconds: 15
+            failureThreshold: 4

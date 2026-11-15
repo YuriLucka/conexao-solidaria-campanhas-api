@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/building-blocks/">
+    <Project Path="building-blocks/ConexaoSolidaria.Contracts/ConexaoSolidaria.Contracts.csproj" />
+    <Project Path="building-blocks/ConexaoSolidaria.Messaging/ConexaoSolidaria.Messaging.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Campanhas.API/Campanhas.API.csproj" />
+    <Project Path="src/Campanhas.Application/Campanhas.Application.csproj" />
+    <Project Path="src/Campanhas.Domain/Campanhas.Domain.csproj" />
+    <Project Path="src/Campanhas.Infrastructure/Campanhas.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Campanhas.Tests/Campanhas.Tests.csproj" />
+  </Folder>
+</Solution>
