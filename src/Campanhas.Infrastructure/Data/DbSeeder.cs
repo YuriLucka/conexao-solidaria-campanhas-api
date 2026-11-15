@@ -27,20 +27,20 @@ public static class DbSeeder
 
         var campanhas = new[]
         {
-            Nova("Natal Esperança", "Presentes, roupas novas e uma ceia de Natal para as 220 crianças acolhidas pela ONG. Cada criança escreve sua cartinha e recebe o presente que pediu.", -55, 40, 60000m, "Datas especiais", "presentes", 220),
+            Nova("Natal da Esperança", "Presentes, roupas novas e uma ceia de Natal para as 220 crianças acolhidas pela ONG. Cada criança escreve sua cartinha, e a ONG se empenha para atender aos pedidos.", -55, 40, 60000m, "Datas especiais", "presentes", 220),
             Nova("Volta às Aulas", "Kits escolares completos para 180 crianças: mochila, cadernos, estojo, uniforme e tênis, montados por voluntários e entregues antes do início das aulas.", -20, 75, 45000m, "Educação", "livros", 180),
             Nova("Reforma do Refeitório", "Troca do piso, nova cozinha industrial e mesas para 120 lugares. O refeitório atual tem mais de 20 anos e serve cerca de 600 refeições por dia.", -90, 120, 85000m, "Infraestrutura", "casa", 220),
-            Nova("Biblioteca Viva", "1.500 livros infantis e juvenis, estantes baixas e um cantinho de leitura, com oficinas semanais de contação de histórias.", -10, 60, 18000m, "Educação", "estrelas", 220),
+            Nova("Biblioteca Viva", "Compra de 500 livros infantis e juvenis, estantes baixas e um cantinho de leitura, com oficinas semanais de contação de histórias.", -10, 60, 18000m, "Educação", "estrelas", 220),
             Nova("Saúde em Dia", "Tratamento odontológico e consultas oftalmológicas para 95 crianças, incluindo óculos quando houver indicação.", -30, 50, 32000m, "Saúde", "saude", 95),
             Nova("Horta que Ensina", "Uma horta comunitária no terreno da ONG, com oficinas de plantio e alimentação saudável. Parte da colheita vai para o refeitório.", -5, 90, 12000m, "Alimentação", "horta", 120)
         };
         db.Campanhas.AddRange(campanhas);
 
         // Encerradas antes do prazo: não aparecem no painel (só Ativa aparece).
-        var inverno = Nova("Inverno Quentinho", "Cobertores, agasalhos e meias para enfrentar o inverno.", -150, 10, 25000m, "Inverno", "inverno", 220);
+        var inverno = Nova("Inverno Quentinho", "Cobertores, agasalhos e meias para que as crianças acolhidas atravessem o inverno aquecidas.", -150, 10, 25000m, "Inverno", "inverno", 220);
         inverno.Atualizar(inverno.Titulo, inverno.Descricao, inverno.DataInicio, inverno.DataFim, inverno.MetaFinanceira, StatusCampanha.Concluida, agora,
             inverno.Categoria, inverno.Capa, inverno.CriancasAtendidas);
-        var passeio = Nova("Passeio ao Parque Ecológico", "Passeio de um dia com transporte e lanche. Cancelada por falta de transporte adaptado.", -60, 15, 6000m, "Esporte e lazer", "sol-colinas", 60);
+        var passeio = Nova("Passeio ao Parque Ecológico", "Passeio de um dia com transporte e lanche. Campanha cancelada porque não foi possível garantir transporte adaptado para todas as crianças.", -60, 15, 6000m, "Esporte e lazer", "sol-colinas", 60);
         passeio.Atualizar(passeio.Titulo, passeio.Descricao, passeio.DataInicio, passeio.DataFim, passeio.MetaFinanceira, StatusCampanha.Cancelada, agora,
             passeio.Categoria, passeio.Capa, passeio.CriancasAtendidas);
         db.Campanhas.AddRange(inverno, passeio);

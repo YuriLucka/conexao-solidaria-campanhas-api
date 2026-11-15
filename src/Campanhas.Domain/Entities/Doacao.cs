@@ -27,11 +27,11 @@ public class Doacao
         if (valor <= 0)
             throw new DomainException("O valor da doação deve ser maior que zero.");
         if (valor > 999_999_999.99m)
-            throw new DomainException("O valor da doação excede o limite permitido.");
+            throw new DomainException("O valor da doação excede o limite permitido (R$ 999.999.999,99).");
         if (decimal.Round(valor, 2) != valor)
-            throw new DomainException("O valor da doação deve ter no máximo 2 casas decimais.");
+            throw new DomainException("O valor da doação deve ter no máximo duas casas decimais.");
         if (!campanha.AceitaDoacao(agora))
-            throw new RegraNegocioException("Esta campanha não está recebendo doações (encerrada ou cancelada).");
+            throw new RegraNegocioException("Esta campanha não está recebendo doações porque foi concluída, cancelada ou teve o prazo encerrado. Escolha outra campanha ativa no painel.");
 
         Id = Guid.NewGuid();
         CampanhaId = campanha.Id;

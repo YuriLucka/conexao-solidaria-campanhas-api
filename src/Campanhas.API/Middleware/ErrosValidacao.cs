@@ -26,7 +26,7 @@ public static class ErrosValidacao
             Title = "Dados inválidos",
             Detail = erros.Count == 1 && erros.First().Value.Length == 1
                 ? erros.First().Value[0]
-                : "Revise os campos indicados em errors.",
+                : "Revise os campos indicados na lista errors.",
             Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1"
         };
         problema.Extensions["traceId"] = context.HttpContext.TraceIdentifier;
@@ -65,7 +65,7 @@ public static class ErrosValidacao
         StatusCodes.Status403Forbidden => "Acesso negado: seu perfil não tem permissão para este recurso",
         StatusCodes.Status404NotFound => "Não encontrado",
         StatusCodes.Status405MethodNotAllowed => "Método não permitido",
-        StatusCodes.Status415UnsupportedMediaType => "Envie o corpo como application/json",
+        StatusCodes.Status415UnsupportedMediaType => "Tipo de conteúdo não suportado: envie o corpo como application/json",
         StatusCodes.Status422UnprocessableEntity => "Operação não permitida",
         StatusCodes.Status500InternalServerError => "Erro interno",
         _ => null

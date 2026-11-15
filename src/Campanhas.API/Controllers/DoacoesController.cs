@@ -27,7 +27,7 @@ public class DoacoesController : ControllerBase
         ?? throw new UnauthorizedAccessException("Token sem identificação do usuário."));
 
     /// <summary>Doar</summary>
-    /// <remarks>Só <c>Doador</c> logado. A API grava a doação como <c>Pendente</c> e publica <c>DoacaoRecebidaEvent</c> no RabbitMQ; quem soma o valor na campanha é o <c>doacoes-worker</c>. Por isso a resposta é 202. Campanha concluída, cancelada ou com prazo vencido não recebe doação.</remarks>
+    /// <remarks>Só <c>Doador</c> logado. A API grava a doação como <c>Pendente</c> e publica <c>DoacaoRecebidaEvent</c> no RabbitMQ; quem soma o valor ao total arrecadado da campanha é o <c>doacoes-worker</c>. Por isso a resposta é 202. Campanha concluída, cancelada ou com prazo encerrado não recebe doação.</remarks>
     /// <param name="request">Campanha e valor.</param>
     /// <param name="ct">Cancelamento.</param>
     /// <response code="202">Doação recebida; será processada pelo worker.</response>
@@ -35,7 +35,7 @@ public class DoacoesController : ControllerBase
     /// <response code="401">Sem token.</response>
     /// <response code="403">Token sem o perfil Doador.</response>
     /// <response code="404">Campanha não encontrada.</response>
-    /// <response code="422">Campanha encerrada ou cancelada.</response>
+    /// <response code="422">Campanha concluída, cancelada ou com prazo encerrado.</response>
     [HttpPost]
     [Authorize(Roles = "Doador")]
     [ProducesResponseType<DoacaoResponse>(StatusCodes.Status202Accepted)]

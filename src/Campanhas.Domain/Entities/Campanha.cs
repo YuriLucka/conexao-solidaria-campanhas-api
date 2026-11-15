@@ -58,7 +58,7 @@ public class Campanha
     {
         ValidarCampos(titulo, descricao, dataInicio, dataFim, metaFinanceira);
         if (!Enum.IsDefined(status))
-            throw new DomainException("Status inválido. Use Ativa, Concluida ou Cancelada.");
+            throw new DomainException("Status inválido. Use um destes valores: Ativa, Concluida ou Cancelada.");
 
         // Mesma regra da criação quando o término muda ou a campanha volta a ficar Ativa.
         var reabrindo = status == StatusCampanha.Ativa && Status != StatusCampanha.Ativa;
@@ -84,21 +84,21 @@ public class Campanha
     private static void ValidarCampos(string titulo, string descricao, DateTime dataInicio, DateTime dataFim, decimal metaFinanceira)
     {
         if (string.IsNullOrWhiteSpace(titulo))
-            throw new DomainException("Título é obrigatório.");
+            throw new DomainException("O título é obrigatório.");
         if (titulo.Trim().Length > 150)
-            throw new DomainException("Título deve ter no máximo 150 caracteres.");
+            throw new DomainException("O título deve ter no máximo 150 caracteres.");
         if (string.IsNullOrWhiteSpace(descricao))
-            throw new DomainException("Descrição é obrigatória.");
+            throw new DomainException("A descrição é obrigatória.");
         if (descricao.Trim().Length > 4000)
-            throw new DomainException("Descrição deve ter no máximo 4000 caracteres.");
+            throw new DomainException("A descrição deve ter no máximo 4.000 caracteres.");
         if (dataInicio > dataFim)
-            throw new DomainException("A data de início não pode ser depois da data de término.");
+            throw new DomainException("A data de início não pode ser posterior à data de término.");
         if (metaFinanceira <= 0)
             throw new DomainException("A meta financeira deve ser maior que zero.");
         if (metaFinanceira > 999_999_999_999.99m)
-            throw new DomainException("A meta financeira excede o limite permitido.");
+            throw new DomainException("A meta financeira excede o limite permitido (R$ 999.999.999.999,99).");
         if (decimal.Round(metaFinanceira, 2) != metaFinanceira)
-            throw new DomainException("A meta financeira deve ter no máximo 2 casas decimais.");
+            throw new DomainException("A meta financeira deve ter no máximo duas casas decimais.");
     }
 
     private void DefinirDetalhes(string? categoria, string? capa, int? criancasAtendidas)
@@ -111,7 +111,7 @@ public class Campanha
         if (capa is not null && !Capas.Contains(capa))
             throw new DomainException($"Capa inválida. Use uma destas: {string.Join(", ", Capas)}.");
         if (criancasAtendidas is < 0 or > 100_000)
-            throw new DomainException("Crianças atendidas deve estar entre 0 e 100000.");
+            throw new DomainException("O número de crianças atendidas deve estar entre 0 e 100.000.");
 
         Categoria = categoria;
         Capa = capa;

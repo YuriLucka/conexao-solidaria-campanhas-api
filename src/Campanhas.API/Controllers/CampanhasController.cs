@@ -38,7 +38,7 @@ public class CampanhasController : ControllerBase
         => Ok(await _campanhas.ObterAsync(id, ct));
 
     /// <summary>Doações recentes da campanha</summary>
-    /// <remarks>Acesso público (transparência). Só doações já processadas, com o primeiro nome e a inicial do sobrenome de quem doou, e os totais de doações e doadores.</remarks>
+    /// <remarks>Acesso público (transparência). Retorna os totais de doações e de doadores e as doações recentes já processadas, identificadas pelo primeiro nome e pela inicial do sobrenome de quem doou.</remarks>
     /// <param name="id">Id da campanha.</param>
     /// <param name="quantidade">Quantas doações recentes trazer (1 a 50, padrão 10).</param>
     /// <param name="ct">Cancelamento.</param>

@@ -21,9 +21,9 @@ public class Usuario
     public Usuario(string nome, string email, string cpf, string senhaHash, Perfil perfil, DateTime agora)
     {
         if (string.IsNullOrWhiteSpace(nome))
-            throw new DomainException("Nome completo é obrigatório.");
+            throw new DomainException("O nome completo é obrigatório.");
         if (nome.Trim().Length > 150)
-            throw new DomainException("Nome completo deve ter no máximo 150 caracteres.");
+            throw new DomainException("O nome completo deve ter no máximo 150 caracteres.");
         if (string.IsNullOrWhiteSpace(senhaHash))
             throw new DomainException("Hash de senha não pode ser vazio.");
 
@@ -40,12 +40,12 @@ public class Usuario
     public static void ValidarSenha(string senha)
     {
         if (string.IsNullOrWhiteSpace(senha) || senha.Length < 8)
-            throw new DomainException("Senha deve ter no mínimo 8 caracteres.");
+            throw new DomainException("A senha deve ter no mínimo 8 caracteres.");
         if (!Regex.IsMatch(senha, "[A-Za-z]"))
-            throw new DomainException("Senha deve conter letras.");
+            throw new DomainException("A senha deve conter ao menos uma letra.");
         if (!Regex.IsMatch(senha, @"\d"))
-            throw new DomainException("Senha deve conter números.");
+            throw new DomainException("A senha deve conter ao menos um número.");
         if (!Regex.IsMatch(senha, "[^A-Za-z0-9]"))
-            throw new DomainException("Senha deve conter caracteres especiais.");
+            throw new DomainException("A senha deve conter ao menos um caractere especial (por exemplo: @, # ou !).");
     }
 }

@@ -10,7 +10,7 @@ public sealed class Cpf
     public Cpf(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new DomainException("CPF é obrigatório.");
+            throw new DomainException("O CPF é obrigatório.");
 
         var trimmed = value.Trim();
         if (trimmed.Any(c => !char.IsDigit(c) && c != '.' && c != '-'))

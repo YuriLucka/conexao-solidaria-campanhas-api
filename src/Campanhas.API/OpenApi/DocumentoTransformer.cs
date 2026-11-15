@@ -20,7 +20,7 @@ internal sealed class DocumentoTransformer(IAuthenticationSchemeProvider esquema
                 painel de transparência e intenção de doação.
 
                 **Fluxo da doação:** `POST /api/doacoes` grava a doação como `Pendente` e publica `DoacaoRecebidaEvent`
-                no RabbitMQ. O `doacoes-worker` consome o evento e soma o valor na campanha. A API nunca altera o valor arrecadado.
+                no RabbitMQ. O `doacoes-worker` consome o evento e soma o valor ao total arrecadado da campanha. A API nunca altera o valor arrecadado.
 
                 **Contas de demonstração:** gestora `helena@esperancasolidaria.demo` / `Gestao@2026`;
                 doadora `mariana@email.demo` / `Doar@2026`.

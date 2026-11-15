@@ -30,7 +30,7 @@ public class ErrorHandler : IExceptionHandler
         {
             BadHttpRequestException bad => (bad.StatusCode, "Requisição inválida"),
             DomainException => (StatusCodes.Status400BadRequest, "Dados inválidos"),
-            UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Não autorizado"),
+            UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Não autenticado"),
             NotFoundException => (StatusCodes.Status404NotFound, "Não encontrado"),
             ConflictException => (StatusCodes.Status409Conflict, "Conflito"),
             RegraNegocioException => (StatusCodes.Status422UnprocessableEntity, "Operação não permitida"),

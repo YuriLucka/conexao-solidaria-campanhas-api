@@ -5,7 +5,7 @@ namespace Campanhas.Application.DTOs;
 
 /// <summary>Dados para criar uma campanha. Toda campanha nasce com status <c>Ativa</c>.</summary>
 /// <param name="Titulo">Título (até 150 caracteres).</param>
-/// <param name="Descricao">Descrição (até 4000 caracteres).</param>
+/// <param name="Descricao">Descrição (até 4.000 caracteres).</param>
 /// <param name="DataInicio">Início (UTC).</param>
 /// <param name="DataFim">Término (UTC); não pode estar no passado.</param>
 /// <param name="MetaFinanceira">Meta em reais; maior que zero.</param>
@@ -17,7 +17,7 @@ public record CriarCampanhaRequest(string Titulo, string Descricao, DateTime Dat
 
 /// <summary>Dados para editar uma campanha, inclusive o status.</summary>
 /// <param name="Titulo">Título (até 150 caracteres).</param>
-/// <param name="Descricao">Descrição (até 4000 caracteres).</param>
+/// <param name="Descricao">Descrição (até 4.000 caracteres).</param>
 /// <param name="DataInicio">Início (UTC).</param>
 /// <param name="DataFim">Término (UTC); se mudar, ou se a campanha for reaberta, não pode estar no passado.</param>
 /// <param name="MetaFinanceira">Meta em reais; maior que zero.</param>

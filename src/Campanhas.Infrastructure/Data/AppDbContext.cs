@@ -38,9 +38,9 @@ public class AppDbContext : DbContext, IUnitOfWork
             // Corrida entre duas requisições: a checagem prévia passou, o índice único barrou.
             throw new ConflictException(pg.ConstraintName switch
             {
-                "ix_usuarios_email" => "Já existe uma conta com este e-mail.",
-                "ix_usuarios_cpf" => "Já existe uma conta com este CPF.",
-                _ => "Registro duplicado."
+                "ix_usuarios_email" => "Já existe uma conta com este e-mail. Entre com ela ou use outro e-mail.",
+                "ix_usuarios_cpf" => "Já existe uma conta com este CPF. Entre com ela ou fale com a ONG.",
+                _ => "Este registro já existe."
             });
         }
     }

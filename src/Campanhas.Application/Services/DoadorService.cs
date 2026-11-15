@@ -31,9 +31,9 @@ public class DoadorService : IDoadorService
         Usuario.ValidarSenha(request.Senha);
 
         if (await _usuarios.EmailExisteAsync(email.Value, ct))
-            throw new ConflictException("Já existe uma conta com este e-mail.");
+            throw new ConflictException("Já existe uma conta com este e-mail. Entre com ela ou use outro e-mail.");
         if (await _usuarios.CpfExisteAsync(cpf.Value, ct))
-            throw new ConflictException("Já existe uma conta com este CPF.");
+            throw new ConflictException("Já existe uma conta com este CPF. Entre com ela ou fale com a ONG.");
 
         var doador = new Usuario(
             request.NomeCompleto, email.Value, cpf.Value, _hasher.Hash(request.Senha),

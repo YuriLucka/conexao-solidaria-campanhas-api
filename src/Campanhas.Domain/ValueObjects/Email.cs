@@ -10,7 +10,7 @@ public sealed partial class Email
     public Email(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new DomainException("E-mail é obrigatório.");
+            throw new DomainException("O e-mail é obrigatório.");
 
         value = value.Trim();
         if (value.Length > 200 || !Formato().IsMatch(value))

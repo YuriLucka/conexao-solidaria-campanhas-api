@@ -42,7 +42,7 @@ public class DoadoresTests(ApiFixture api)
         var resposta = await client.PostAsJsonAsync("/api/doadores", new { nomeCompleto = "Bia 2", email = email.ToUpperInvariant(), cpf = Cpfs[2], senha = "Doar@2026" });
 
         Assert.Equal(HttpStatusCode.Conflict, resposta.StatusCode);
-        Assert.Equal("Já existe uma conta com este e-mail.", (await Problema.LerAsync(resposta)).Detail);
+        Assert.Equal("Já existe uma conta com este e-mail. Entre com ela ou use outro e-mail.", (await Problema.LerAsync(resposta)).Detail);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class DoadoresTests(ApiFixture api)
         var resposta = await client.PostAsJsonAsync("/api/doadores", new { nomeCompleto = "Caio 2", email = EmailUnico(), cpf = "12345678909", senha = "Doar@2026" });
 
         Assert.Equal(HttpStatusCode.Conflict, resposta.StatusCode);
-        Assert.Equal("Já existe uma conta com este CPF.", (await Problema.LerAsync(resposta)).Detail);
+        Assert.Equal("Já existe uma conta com este CPF. Entre com ela ou fale com a ONG.", (await Problema.LerAsync(resposta)).Detail);
     }
 
     [Theory]
@@ -77,7 +77,7 @@ public class DoadoresTests(ApiFixture api)
         var resposta = await client.PostAsJsonAsync("/api/doadores", new { nomeCompleto = "Eva", email = EmailUnico(), cpf = Cpfs[4], senha = "fraca" });
 
         Assert.Equal(HttpStatusCode.BadRequest, resposta.StatusCode);
-        Assert.Contains("Senha", (await Problema.LerAsync(resposta)).Detail);
+        Assert.Contains("senha", (await Problema.LerAsync(resposta)).Detail);
     }
 
     [Fact]
