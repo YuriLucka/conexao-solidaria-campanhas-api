@@ -71,12 +71,18 @@ public class Consultas : IConsultas
                 d.Doacao.MotivoRejeicao, d.Doacao.CriadaEm, d.Doacao.ProcessadaEm))
             .FirstOrDefaultAsync(ct);
 
-    public async Task<DoacoesGestaoPaginaResponse> DoacoesGestaoAsync(Guid? campanhaId, StatusDoacao? status, int pagina, int tamanho, CancellationToken ct = default)
+    public async Task<DoacoesGestaoPaginaResponse> DoacoesGestaoAsync(Guid? campanhaId, StatusDoacao? status, string? busca, int pagina, int tamanho,
+        CancellationToken ct = default)
     {
         var daCampanha = _db.Doacoes.AsNoTracking();
         if (campanhaId is not null)
             daCampanha = daCampanha.Where(d => d.CampanhaId == campanhaId);
         var filtradas = status is null ? daCampanha : daCampanha.Where(d => d.Status == status);
+        if (!string.IsNullOrWhiteSpace(busca))
+        {
+            var padrao = Padrao(busca);
+            filtradas = filtradas.Where(d => _db.Usuarios.Any(u => u.Id == d.DoadorId && EF.Functions.ILike(u.Nome, padrao)));
+        }
 
         var total = await filtradas.CountAsync(ct);
         var itens = await (from d in filtradas
@@ -122,7 +128,7 @@ public class Consultas : IConsultas
         var filtrados = doadores;
         if (!string.IsNullOrEmpty(termo))
         {
-            var padrao = "%" + termo.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_") + "%";
+            var padrao = Padrao(termo);
             filtrados = _db.Usuarios.FromSqlInterpolated($"SELECT * FROM usuarios WHERE nome ILIKE {padrao} OR email ILIKE {padrao}")
                 .AsNoTracking().Where(u => u.Perfil == Perfil.Doador);
         }
@@ -190,6 +196,10 @@ public class Consultas : IConsultas
 
     private static DateTime InicioDoDiaUtc(DateOnly diaEmBrasilia)
         => DateTime.SpecifyKind(diaEmBrasilia.ToDateTime(TimeOnly.MinValue) - DatasUtc.Brasilia, DateTimeKind.Utc);
+
+    // Trecho para ILIKE, com os curingas digitados pelo usuário escapados.
+    private static string Padrao(string termo)
+        => "%" + termo.Trim().Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_") + "%";
 
     private IQueryable<DoacaoComTitulo> DoacoesComTitulo()
         => from d in _db.Doacoes.AsNoTracking()

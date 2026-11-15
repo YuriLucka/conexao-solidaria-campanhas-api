@@ -80,6 +80,7 @@ public class DoacoesController : ControllerBase
     /// <remarks>Só <c>GestorONG</c>. Paginado, mais recentes primeiro, com filtros opcionais. Os totais (valor confirmado, quantidades por situação, doadores únicos e ticket médio) consideram todas as doações da campanha filtrada, não só a página.</remarks>
     /// <param name="idCampanha">Filtra por campanha.</param>
     /// <param name="status"><c>Pendente</c>, <c>Processada</c> ou <c>Rejeitada</c>.</param>
+    /// <param name="busca">Trecho do nome do doador (opcional).</param>
     /// <param name="pagina">Página, a partir de 1.</param>
     /// <param name="tamanho">Itens por página (1 a 100, padrão 20).</param>
     /// <param name="ct">Cancelamento.</param>
@@ -89,7 +90,7 @@ public class DoacoesController : ControllerBase
     [ProducesResponseType<DoacoesGestaoPaginaResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<DoacoesGestaoPaginaResponse>> Listar(
-        [FromQuery] Guid? idCampanha, [FromQuery] StatusDoacao? status, [FromQuery] int pagina = 1, [FromQuery] int tamanho = 20,
-        CancellationToken ct = default)
-        => Ok(await _consultas.DoacoesGestaoAsync(idCampanha, status, Math.Max(1, pagina), Math.Clamp(tamanho, 1, 100), ct));
+        [FromQuery] Guid? idCampanha, [FromQuery] StatusDoacao? status, [FromQuery] string? busca, [FromQuery] int pagina = 1,
+        [FromQuery] int tamanho = 20, CancellationToken ct = default)
+        => Ok(await _consultas.DoacoesGestaoAsync(idCampanha, status, busca, Math.Max(1, pagina), Math.Clamp(tamanho, 1, 100), ct));
 }
